@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "registers.h"
 #include "ram.h"
@@ -14,30 +15,45 @@ RamAddr ar = 0;         // address
 RamAddr pc = 0;         // program counter
 Int ram[N_WORDS_RAM];   // RAM
 
-int main() 
+int main(int argc, char *argv[]) 
 {
+    /* Open bytecode file */
+    if (argc != 2) {
+        fprintf(stderr, "Wrong arguments\n");
+        exit(1);
+    }
+    FILE *file_ptr;
+    file_ptr = fopen(argv[1], "rb");
+
     /* Read instructions and load onto RAM */
+    Int instr;
+    RamAddr i = 0;
+    while (feof(file_ptr) == 0) {
+        fread(&instr, sizeof(Int), 1, file_ptr);
+        ram[i] = instr;
+        i++;
+    }
     
     /* Execution loop */
     int exec_status;
     do {
         /* Read opcode at pc */
         cir = ram[pc];
+        //printf("Running instr # %d", pc);
         // For JMP to work pc must be incremented here
         pc++;
 
         /* Execute */
-        // !! this has side effects
         // !! this might modify pc (via JMP and JMPZ)
         exec_status = exec_opcode(cir);
+        //printf(", status %d\n", exec_status);
     } while (exec_status == 0);
     
     /* Exit */
     if (exec_status == 1) {
-        //halt();
         return 0;
     } else {
-        //get_broken();
+        printf("Error: instruction #%d returned %d\n", --pc, exec_status);
         return 1;
     }
 }

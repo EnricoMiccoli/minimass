@@ -55,7 +55,10 @@ void jump(RamAddr addr)
  */
 void io_read(RamAddr addr)
 {
-    scanf("%d", &ram[addr]);
+    int temp;
+    printf("> ");
+    scanf("%d", &temp);
+    ram[addr] = (Int) temp;
 }
 
 /*
@@ -64,7 +67,7 @@ void io_read(RamAddr addr)
  */
 void io_write(RamAddr addr)
 {
-    printf("%d", ram[addr]);
+    printf("%d\n", ram[addr]);
 }
 
 /*
@@ -86,51 +89,52 @@ void load_const(Register *reg_ptr, int value)
 int exec_opcode(int instruction)
 {
     // TODO make proper length: 12b and 4b
-    RamAddr operand = instruction && OPERAND_MASK;
+    RamAddr operand = instruction & (OPERAND_MASK);
     int opcode = instruction >> OPCODE_SHIFT;
+    //printf("~%d\n", opcode);
 
     switch (opcode) {
-        case 0000: // LOADA
+        case 0: // LOADA
             load(&a, operand);
             break;
-        case 0001: // LOADB
+        case 1: // LOADB
             load(&b, operand);
             break;
-        case 0010: // STOREA
+        case 2: // STOREA
             store(&a, operand);
             break;
-        case 0011: // STOREB
+        case 3: // STOREB
             store(&b, operand);
             break;
-        case 0110: // ADD
+        case 4: // READ
+            io_read(operand);
+            break;
+        case 5: // WRITE
+            io_write(operand);
+            break;
+        case 6: // ADD
             add();
             break;
-        case 0111: // DIF
+        case 7: // DIF
             diff();
             break;
-        case 1010: // JMP
+        case 8: // LDCA //TODO check bits
+            load_const(&a, (int) operand);
+            break;
+        case 9: // LDCB
+            load_const(&b, (int) operand);
+            break;
+        case 10: // JMP
             jump(operand);
             break;
-        case 1011: // JMPZ
+        case 11: // JMPZ
             if (a == 0)
                 jump(operand);
             break;
-        case 1100: // NOP
+        case 12: // NOP
             break;
-        case 1101: // HALT
+        case -3: // HALT
             return 1;
-            break;
-        case 0100: // READ
-            io_read(operand);
-            break;
-        case 0101: // WRITE
-            io_write(operand);
-            break;
-        case 1000: // LDCA //TODO check bits
-            load_const(&a, (int) operand);
-            break;
-        case 1001: // LDCB
-            load_const(&b, (int) operand);
             break;
         default:
             return -1;
