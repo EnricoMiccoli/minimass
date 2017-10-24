@@ -118,20 +118,20 @@ int exec_opcode(int instruction)
         case 7: // DIF
             diff();
             break;
-        case 8: // LDCA //TODO check bits
+        case -8: // LDCA //TODO check bits
             load_const(&a, (int) operand);
             break;
-        case 9: // LDCB
+        case -7: // LDCB
             load_const(&b, (int) operand);
             break;
-        case 10: // JMP
+        case -6: // JMP
             jump(operand);
             break;
-        case 11: // JMPZ
+        case -5: // JMPZ
             if (a == 0)
                 jump(operand);
             break;
-        case 12: // NOP
+        case -4: // NOP
             break;
         case -3: // HALT
             return 1;
