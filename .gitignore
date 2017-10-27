@@ -1,2 +1,4 @@
 runner
 assembler
+examples/*
+!examples/.masm
