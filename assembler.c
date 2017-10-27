@@ -113,6 +113,7 @@ int main(int argc, char *argv[])
     char opcode[LEN_MAX_OPCODE];
     int i = 0;
     int is_opcode = 1;
+    int is_comment = 0;
 
     while(c != EOF) {
         //TODO check against empty file,
@@ -125,36 +126,38 @@ int main(int argc, char *argv[])
         //     if (waiting_for_operand) {...}
         c = fgetc(infile_ptr);
         switch (c) {
+            case ';':
+                is_comment = 1;
+                break;
             case ' ':
             case '\t':
-                /* Terminate opcode */
-                opcode[i] = '\0';
-                i=0;
-                is_opcode = 0;
+                if (is_comment == 0 && is_opcode == 1) {
+                    opcode[i] = '\0';
+                    i=0;
+                    is_opcode = 0;
+                }
                 break;
             case '\n':
             case '\r':
                 if (is_opcode) {
-                    /* Terminate unary opcode */
                     opcode[i] = '\0';
-
-                    /* Set empty operand */
                     strcpy(operand, "0");
                 } else {
-                    /* Terminate operand */
                     operand[i] = '\0';
                 }
-                /* Write instruction to file */
                 write_instr(outfile_ptr, opcode, operand);
                 i = 0;
                 is_opcode = 1;
+                is_comment = 0;
                 break;
             default:
-                if (is_opcode == 1)
-                    opcode[i] = c;
-                else
-                    operand[i] = c;
-                i++;
+                if (is_comment == 0) {
+                    if (is_opcode == 1)
+                        opcode[i] = c;
+                    else
+                        operand[i] = c;
+                    i++;
+                }
         }
     }
     
