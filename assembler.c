@@ -114,6 +114,7 @@ int main(int argc, char *argv[])
     int i = 0;
     int is_opcode = 1;
     int is_comment = 0;
+    int is_newline = 1;
 
     while(c != EOF) {
         //TODO check against empty file,
@@ -131,15 +132,18 @@ int main(int argc, char *argv[])
                 break;
             case ' ':
             case '\t':
-                if (is_comment == 0 && is_opcode == 1) {
-                    opcode[i] = '\0';
-                    i=0;
-                    is_opcode = 0;
-                }
+                if (is_comment == 1 || is_opcode == 0)
+                    break;
+                opcode[i] = '\0';
+                i=0;
+                is_opcode = 0;
+                is_newline = 0;
                 break;
             case '\n':
             case '\r':
-                if (is_opcode) {
+                if (is_newline == 1)
+                    break;
+                if (is_opcode == 1) {
                     opcode[i] = '\0';
                     strcpy(operand, "0");
                 } else {
@@ -149,15 +153,17 @@ int main(int argc, char *argv[])
                 i = 0;
                 is_opcode = 1;
                 is_comment = 0;
+                is_newline = 1;
                 break;
             default:
-                if (is_comment == 0) {
-                    if (is_opcode == 1)
-                        opcode[i] = c;
-                    else
-                        operand[i] = c;
-                    i++;
-                }
+                if (is_comment == 1)
+                    break;
+                if (is_opcode == 1)
+                    opcode[i] = c;
+                else
+                    operand[i] = c;
+                i++;
+                is_newline = 0;
         }
     }
     
