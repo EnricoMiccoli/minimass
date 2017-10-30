@@ -21,8 +21,8 @@ except `ADD, DIF, NOP, HALT` that require no operand.
 
 ```
 OPCODES         <op> type
-0000  0  LOADA    value    copy in A the value from RAM cell <op>
-0001  1  LOADB    value    copy in B the value from RAM cell <op>
+0000  0  LOADA    addr.    copy in A the value from RAM cell <op>
+0001  1  LOADB    addr.    copy in B the value from RAM cell <op>
 0010  2  STOREA   addr.    store in RAM cell <op> the value from A
 0011  3  STOREB   addr.    store in RAM cell <op> the value from B
 0100  4  READ     addr.    read from console, store in RAM cell <op>
