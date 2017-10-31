@@ -117,14 +117,6 @@ int main(int argc, char *argv[])
     int is_newline = 1;
 
     while(c != EOF) {
-        //TODO check against empty file,
-        // allow multiple whitespace chars before operand
-        // Eg 
-        // case ' ':
-        //     waiting_for_operand = 1;
-        // ...
-        // default:
-        //     if (waiting_for_operand) {...}
         c = fgetc(infile_ptr);
         switch (c) {
             case ';':
@@ -137,12 +129,13 @@ int main(int argc, char *argv[])
                 opcode[i] = '\0';
                 i=0;
                 is_opcode = 0;
-                is_newline = 0;
                 break;
             case '\n':
             case '\r':
-                if (is_newline == 1)
+                if (is_newline == 1) {
+                    is_comment = 0;
                     break;
+                }
                 if (is_opcode == 1) {
                     opcode[i] = '\0';
                     strcpy(operand, "0");
