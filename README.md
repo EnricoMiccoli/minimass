@@ -13,7 +13,7 @@ $ ./runner examples/sum
 ```
 
 ## Available instructions, registers and memory
-All instructions all called as follows:
+All instructions are called as follows:
 ```
 OPCODE <operand>
 ```
@@ -31,8 +31,8 @@ OPCODES         <op> type
 0111  7  DIF      -        load A - B in A
 1000 -8  LDCA     value    load <op> in A
 1001 -7  LDCB     value    load <op> in B
-1010 -6  JMP      addr     run instruction at RAM cell <op> next
-1011 -5  JMPZ     addr     do the same as jump, if A == 0
+1010 -6  JMP      addr.    run instruction at RAM cell <op> next
+1011 -5  JMPZ     addr.    do the same as jump, if A == 0
 1100 -4  NOP      -        do nothing
 1101 -3  HALT     -        stop execution
 ```
